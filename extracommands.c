@@ -3,7 +3,8 @@ This was taken and modified from Koush's extendedcommands.c
 http://github.com/koush/android_bootable_recovery
 To handle formatting non yaffs2 partitions like the ext3 /data & /cache on Incredible
 */
-/* Smelkus updated source credits*/
+/* Smelkus
+Updated source credits and added autoreboot with gnm's help*/
 
 #include <assert.h>
 #include <errno.h>
@@ -1399,4 +1400,15 @@ void source_and_credits()
 	ui_print("Files modified by smelkus available at\n");
 	ui_print("http://dev-host.org/users/smelkus\n");
 }
-	
+
+void nandroid_auto_reboot()
+{
+
+       char autorb_enabled[PATH_MAX];
+       property_get("autoreboot.enabled", autorb_enabled, "");
+       if(!strcmp(autorb_enabled, "1")) {
+               ui_print("Rebooting recovery in 3 seconds!!\n");
+               sleep(3);
+               reboot(RB_AUTOBOOT);
+       }
+}	

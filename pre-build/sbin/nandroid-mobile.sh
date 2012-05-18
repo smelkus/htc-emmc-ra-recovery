@@ -1400,8 +1400,9 @@ if [ "$NOANDROID_SECURE_INTERNAL" == 0 ]; then
 		$ECHO "Restore done"
 		unmount_all
 		if [ "$AUTOREBOOT" == 1 ]; then
-			reboot
-			fi
+		     setprop autoreboot.enabled 1
+		     #reboot
+		     fi
 	exit 0
 fi
 
@@ -1900,7 +1901,8 @@ fi
 # 9.
 $ECHO "Backup successful."
 if [ "$AUTOREBOOT" == 1 ]; then
-    reboot
+   setprop autoreboot.enabled 1
+   #reboot
 fi
 exit 0
 fi

@@ -511,6 +511,7 @@ show_menu_nandroid_restore(const char *selected_restore)
 
             finish_recovery(NULL);
             ui_reset_progress();
+            nandroid_auto_reboot();
 
             // throw away keys pressed while the command was running,
             // so user doesn't accidentally trigger menu items.
@@ -1435,6 +1436,7 @@ show_menu_nandroid()
 
             finish_recovery(NULL);
             ui_reset_progress();
+            nandroid_auto_reboot();
 
             // throw away keys pressed while the command was running,
             // so user doesn't accidentally trigger menu items.
