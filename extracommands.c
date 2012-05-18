@@ -1407,7 +1407,7 @@ void nandroid_auto_reboot()
        char autorb_enabled[PATH_MAX];
        property_get("autoreboot.enabled", autorb_enabled, "");
        if(!strcmp(autorb_enabled, "1")) {
-               ui_print("Rebooting recovery in 3 seconds!!\n");
+               ui_print("Rebooting phone in 3 seconds!!\n");
                sleep(3);
                reboot(RB_AUTOBOOT);
        }
