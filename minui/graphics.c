@@ -33,9 +33,17 @@
 #include "font_7x16.h"
 #elif defined (BOARD_XDPI_RECOVERY)
 //include "font_19x31.h"
-#include "font_15x24.h"
+    #ifdef BOARD_USE_CUSTOM_FONT
+        #include "roboto_15x24.h"
+    #else
+        #include "font_15x24.h"
+    #endif
 #else
-#include "font_10x18.h"
+    #ifdef BOARD_USE_CUSTOM_FONT
+        #include "roboto_10x18.h"
+    #else
+        #include "font_10x18.h"
+    #endif
 #endif
 
 #include "minui.h"
