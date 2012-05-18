@@ -186,7 +186,7 @@ static void draw_text_line(int row, const char* t) {
 
 #elif defined (CM_THEME)
 // CM
-#define MENU_TEXT_COLOR 61, 233, 255, 255
+#define MENU_TEXT_COLOR 51, 181, 229, 255
 #define NORMAL_TEXT_COLOR 193, 193, 193, 255
 #define SELECTED_TEXT_COLOR 0, 0, 0, 255
 
@@ -204,7 +204,7 @@ static void draw_text_line(int row, const char* t) {
 
 #else 
 // CM
-#define MENU_TEXT_COLOR 61, 233, 255, 255
+#define MENU_TEXT_COLOR 51, 181, 229, 255
 #define NORMAL_TEXT_COLOR 193, 193, 193, 255
 #define SELECTED_TEXT_COLOR 0, 0, 0, 255
 

@@ -21,6 +21,7 @@
 # Amon_RA -> added wimax restore/backup
 # Getitnowmarketing added android_secure restore
 # Getitnowmarketing added Clockwork 4.0 & 5.0 Nandroid restore compatibility
+# smelkus added AUTOREBOOT to restore
 
 # Requirements:
 
@@ -1398,7 +1399,10 @@ if [ "$NOANDROID_SECURE_INTERNAL" == 0 ]; then
 		fi
 		$ECHO "Restore done"
 		unmount_all
-		exit 0
+		if [ "$AUTOREBOOT" == 1 ]; then
+			reboot
+			fi
+	exit 0
 fi
 
 # 2.

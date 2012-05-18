@@ -179,11 +179,9 @@ get_args(int *argc, char ***argv) {
         LOGI("Boot status: %.*s\n", sizeof(boot.status), boot.status);
     }
 
-    struct stat file_info;
-
     // --- if arguments weren't supplied, look in the bootloader control block
-    if (*argc <= 1 && 0 != stat("/tmp/.ignorebootmessage", &file_info)) {
-         boot.recovery[sizeof(boot.recovery) - 1] = '\0';  // Ensure termination
+    if (*argc <= 1) {
+        boot.recovery[sizeof(boot.recovery) - 1] = '\0';  // Ensure termination
         const char *arg = strtok(boot.recovery, "\n");
         if (arg != NULL && !strcmp(arg, "recovery")) {
             *argv = (char **) malloc(sizeof(char *) * MAX_ARGS);
@@ -336,6 +334,7 @@ show_menu_nandroid_restore(const char *selected_restore)
 #ifdef IS_ICONIA		
 				"- [X] flexrom",
 #endif
+				"- [ ] autoreboot",
 				"- Perform Restore",
 				"- Return",
 		NULL};
@@ -357,6 +356,7 @@ show_menu_nandroid_restore(const char *selected_restore)
 #ifdef IS_ICONIA		
 				"- [X] flexrom",
 #endif
+				"- [X] autoreboot",
 				"- Perform Restore",
 				"- Return",
 		NULL};
@@ -378,6 +378,7 @@ show_menu_nandroid_restore(const char *selected_restore)
 #ifdef IS_ICONIA		
 				"- [ ] flexrom",
 #endif
+				"- [ ] autoreboot",
 				"- Perform Restore",
 				"- Return",
 		NULL};
@@ -419,15 +420,15 @@ show_menu_nandroid_restore(const char *selected_restore)
             // on the screen.
             ui_end_menu();
 #if defined (HAS_INTERNAL_SD) && defined (HAS_WIMAX)
-	    if (chosen_item < 9) {
+	    if (chosen_item < 10) {
 #elif defined (HAS_INTERNAL_SD) 
-            if (chosen_item < 8) {
+            if (chosen_item < 9) {
 #elif defined (HAS_WIMAX)
-	    if (chosen_item < 8) {
+	    if (chosen_item < 9) {
 #elif defined (IS_ICONIA)
-	    if (chosen_item < 8) {
+	    if (chosen_item < 9) {
 #else
-            if (chosen_item < 7) {
+            if (chosen_item < 8) {
 #endif
 		   // Rebuild items
 		   if (items[chosen_item]==items_in[chosen_item]) {
@@ -436,19 +437,19 @@ show_menu_nandroid_restore(const char *selected_restore)
 	               items[chosen_item]=items_in[chosen_item];
 	           }
 #if defined (HAS_INTERNAL_SD) && defined (HAS_WIMAX)
-			} else if (chosen_item == 10) {
+			} else if (chosen_item == 11) {
 		return;
 #elif defined (HAS_INTERNAL_SD)
-			} else if (chosen_item == 9) {
+			} else if (chosen_item == 10) {
 		return; 
 #elif defined (HAS_WIMAX)
-			} else if (chosen_item == 9) {
+			} else if (chosen_item == 10) {
 		return; 
 #elif defined (IS_ICONIA)
-			} else if (chosen_item == 9) {
+			} else if (chosen_item == 10) {
 		return;
 #else
-            } else if (chosen_item == 8) {
+            } else if (chosen_item == 9) {
 		return; 
 #endif
 
@@ -481,6 +482,7 @@ show_menu_nandroid_restore(const char *selected_restore)
 #ifdef IS_ICONIA	
 				if (strcmp( items[i], "- [X] flexrom")  == 0) strcat(nandroid_command, " --flexrom");
 #endif                	        
+				if (strcmp( items[i], "- [X] autoreboot") == 0) strcat(nandroid_command, " --autoreboot");
 		i++;	
 		}
 				char usb_storage[64];
@@ -1116,7 +1118,7 @@ int get_file_selection(char** headers, char** list) {
     int selected = 0;
     int chosen_item = -1;
 
-    while (chosen_item < 0 && chosen_item != -9) {
+    while (chosen_item < 0 && chosen_item != -10) {
         int key = ui_wait_key();
         int visible = ui_text_visible();
 		int action = device_handle_key(key, visible);
@@ -1133,10 +1135,10 @@ int get_file_selection(char** headers, char** list) {
 			break;
 		case SELECT_ITEM:
 			chosen_item = selected;
-			if (chosen_item==0) chosen_item = -9;
+			if (chosen_item==0) chosen_item = -10;
 			break;
 		case GO_BACK:
-			chosen_item = -9;
+			chosen_item = -10;
 			break;
 		}
 	}	
@@ -1190,7 +1192,7 @@ char* choose_file_menu(const char* directory, const char* fileExtensionOrDirecto
         {
 
             int chosen_item = get_file_selection(headers, list);
-            if (chosen_item == -9)
+            if (chosen_item == -10)
                 break;
 
             static char ret[PATH_MAX];
@@ -1257,6 +1259,7 @@ show_menu_nandroid()
 				"- [X] flexrom",
 #endif
 				"- [ ] compress_backup",
+				"- [ ] autoreboot",
 				"- Perform Backup",
 				"- Return",
 		NULL};
@@ -1279,6 +1282,7 @@ show_menu_nandroid()
 				"- [X] flexrom",
 #endif
 				"- [X] compress_backup",
+				"- [X] autoreboot",
 				"- Perform Backup",
 				"- Return",
 		NULL};
@@ -1301,6 +1305,7 @@ show_menu_nandroid()
 				"- [ ] flexrom",
 #endif
 				"- [ ] compress_backup",
+				"- [ ] autoreboot",
 				"- Perform Backup",
 				"- Return",
                	NULL};
@@ -1341,15 +1346,15 @@ show_menu_nandroid()
             // on the screen.
             ui_end_menu();
 #if defined (HAS_INTERNAL_SD) && defined (HAS_WIMAX)
-	    if (chosen_item < 10) {
+	    if (chosen_item < 11) {
 #elif defined (HAS_INTERNAL_SD) 
-            if (chosen_item < 9) {
+            if (chosen_item < 10) {
 #elif defined (HAS_WIMAX)
-	    if (chosen_item < 9) {
+	    if (chosen_item < 10) {
 #elif defined (IS_ICONIA) 
-	    if (chosen_item < 9) {
+	    if (chosen_item < 10) {
 #else
-            if (chosen_item < 8) {
+            if (chosen_item < 9) {
 #endif
 		   // Rebuild items
 		   if (items[chosen_item]==items_in[chosen_item]) {
@@ -1358,19 +1363,19 @@ show_menu_nandroid()
 	               items[chosen_item]=items_in[chosen_item];
 	           }
 #if defined (HAS_INTERNAL_SD) && defined (HAS_WIMAX)
-			} else if (chosen_item == 11) {
+			} else if (chosen_item == 12) {
 		return;
 #elif defined (HAS_INTERNAL_SD) 
-			} else if (chosen_item == 10) {
+			} else if (chosen_item == 11) {
 		return; 
 #elif defined (HAS_WIMAX)
-			} else if (chosen_item == 10) {
+			} else if (chosen_item == 11) {
 		return;
 #elif defined (IS_ICONIA)
-			} else if (chosen_item == 10) {
+			} else if (chosen_item == 11) {
 		return; 
 #else
-            } else if (chosen_item == 9) {
+            } else if (chosen_item == 10) {
 		return; 
 #endif
 
@@ -1403,6 +1408,7 @@ show_menu_nandroid()
 #ifdef IS_ICONIA		
 				if (strcmp( items[i], "- [X] flexrom")  == 0) strcat(nandroid_command, " --flexrom");
 #endif                	        
+				if (strcmp( items[i], "- [X] autoreboot") == 0) strcat(nandroid_command, " --autoreboot");
 		i++;	
 		}
 				ensure_root_path_mounted("SDCARD:");
@@ -3509,10 +3515,6 @@ main(int argc, char **argv)
 	    return dump_image_main(argc, argv);
 	if (strstr(argv[0], "erase_image") != NULL)
 	    return erase_image_main(argc, argv);
-#endif
-#ifdef HBOOT_SON_KERNEL
-	if (strstr(argv[0], "misctool"))
-        return misctool_main(argc, argv);
 #endif
 
      }

@@ -3,6 +3,8 @@ This was taken and modified from Koush's extendedcommands.c
 http://github.com/koush/android_bootable_recovery
 To handle formatting non yaffs2 partitions like the ext3 /data & /cache on Incredible
 */
+/* Smelkus updated source credits*/
+
 #include <assert.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -1383,14 +1385,18 @@ void preinit_setup()
 
 void source_and_credits()
 {
-	ui_print("Built by Getitnowmarketing\n\n");
+	ui_print("\n");
+	ui_print("Built by smelkus\n\n");
 	ui_print("Credits:\n");
-	ui_print("Amon Ra for original source\n");
-	ui_print("Koush & the rest of Cyanogenmod team\n");
+	ui_print("Getitnowmarketing and Amon Ra\n");
+	ui_print("for the original source code\n");
+	ui_print("Koush & the Cyanogenmod team\n");
 #ifdef TOUCH_UI
 	ui_print("Gweedo767 & CEnnis91 for touch ui\n");
 #endif
-	ui_print("Source Code for both GPL and Apache Licensed code:\n");
+	ui_print("Source Code for GPL and Apache Licensed code:\n");
 	ui_print("https://github.com/getitnowmarketing\n");
+	ui_print("Files modified by smelkus available at\n");
+	ui_print("http://dev-host.org/users/smelkus\n");
 }
 	

@@ -40,7 +40,7 @@
 #define SYN_MT_REPORT 2
 #ifdef USE_TOUCH_SCROLLING
 // The amount of time in ms to delay before duplicating a held down key.
-#define KEYHOLD_DELAY 10
+#define KEYHOLD_DELAY 5
 #endif
 
 struct virtualkey {
