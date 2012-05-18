@@ -1396,9 +1396,7 @@ void source_and_credits()
 	ui_print("Gweedo767 & CEnnis91 for touch ui\n");
 #endif
 	ui_print("Source Code for GPL and Apache Licensed code:\n");
-	ui_print("https://github.com/getitnowmarketing\n");
-	ui_print("Files modified by smelkus available at\n");
-	ui_print("http://dev-host.org/users/smelkus\n");
+	ui_print("https://github.com/smelkus\n");
 }
 
 void nandroid_auto_reboot()
