@@ -4,7 +4,9 @@ http://github.com/koush/android_bootable_recovery
 To handle formatting non yaffs2 partitions like the ext3 /data & /cache on Incredible
 */
 /* Smelkus
-Updated source credits and added autoreboot with gnm's help*/
+Updated source credits and added autoreboot - credits to gnm
+Added wipe_temp_files per Calkulin's Clear Temp zip
+*/
 
 #include <assert.h>
 #include <errno.h>
@@ -1392,6 +1394,9 @@ void source_and_credits()
 	ui_print("Getitnowmarketing and Amon Ra\n");
 	ui_print("for the original source code\n");
 	ui_print("Koush & the Cyanogenmod team\n");
+#ifdef BOARD_USE_CUSTOM_FONT
+	ui_print("CEnnis91 for Roboto font\n");
+#endif
 #ifdef TOUCH_UI
 	ui_print("Gweedo767 & CEnnis91 for touch ui\n");
 #endif
@@ -1409,4 +1414,80 @@ void nandroid_auto_reboot()
                sleep(3);
                reboot(RB_AUTOBOOT);
        }
+}
+
+void wipe_temp_files()
+{
+    ensure_root_path_mounted("DATA:");
+    ensure_root_path_mounted("SDCARD:");
+    __system("rm -r /data/agent");
+    __system("rm -r /data/anr");
+    __system("rm -r /data/app-cache");
+    __system("rm -r /data/backup");
+    __system("rm -r /data/boot-cache");
+    __system("rm -r /data/data/com.android.browser/app_databases");
+    __system("rm /data/data/com.android.browser/app_geolocation/CachedPosition.db");
+    __system("rm -r /data/data/com.android.browser/app_icons");
+    __system("rm -r /data/data/com.android.email/cache");
+    __system("rm -r /data/data/com.android.htccontacts/cache");
+    __system("rm /data/data/com.android.htccontacts/databases/webviewCache.db");
+    __system("rm -r /data/data/com.android.mms/cache");
+    __system("rm /data/data/com.android.mms/bufferFileForMms");
+    __system("rm -r /data/data/com.android.vending/cache");
+    __system("rm -r /data/data/com.androidapps.spare_parts/cache");
+    __system("rm /data/data/com.androidapps.spare_parts/databases/webviewCache.db");
+    __system("rm -r /data/data/com.dataviz.docstogo/cache");
+    __system("rm /data/data/com.dataviz.docstogo/databases/webviewCache.db");
+    __system("rm -r /data/data/com.ebay.mobile/cache");
+    __system("rm -r /data/data/com.estrongs.android.pop/app_.apps");
+    __system("rm -r /data/data/com.facebook.katana/cache");
+    __system("rm -r /data/data/com.fring/cache");
+    __system("rm -r /data/data/com.fring/files");
+    __system("rm -r /data/data/com.google.android.apps.gtalkservice/files/sslcache");
+    __system("rm -r /data/data/com.google.android.apps.maps/cache");
+    __system("rm /data/data/com.google.android.apps.maps/databases/webviewCache.db");
+    __system("rm -r /data/data/com.google.android.apps.providers.gmail/files/sslcache");
+    __system("rm -r /data/data/com.google.android.apps.providers.subscribedfeeds/files/sslcache");
+    __system("rm -r /data/data/com.google.android.location/files");
+    __system("rm -r /data/data/com.htc.album/cache");
+    __system("rm -r /data/data/com.htc.friendstream/cache");
+    __system("rm -r /data/data/com.htc.launcher/cache");
+    __system("rm -r /data/data/com.htc.socialnetwork.facebook/cache");
+    __system("rm -r /data/data/com.ihopethisworks.quickhulu/cache");
+    __system("rm -r /data/data/com.noshufou.android.su/cache");
+    __system("rm -r /data/data/com.pandora.android/cache");
+    __system("rm -r /data/data/spinninghead.talkingstopwatchlite/cache");
+    __system("rm /data/data/spinninghead.talkingstopwatchlite/databases/webviewCache.db");
+    __system("rm -r /data/dontpanic");
+    __system("rm -r /data/local/tmp");
+    __system("rm -r /data/lost+found");
+    __system("rm -r /data/misc/agent_htc");
+    __system("rm -r /data/misc/wimax");
+    __system("rm -r /data/system/dropbox");
+    __system("rm -r /data/system/throttle");
+    __system("rm -r /data/system/usagestats");
+    __system("rm /data/system/batterystats.bin");
+    __system("rm /data/system/uiderrors.txt");
+    __system("rm -r /data/tombstones");
+    __system("rm -r /data/wimax");
+    __system("rm -r /sdcard/.adobe-digital-editions");
+    __system("rm -r /sdcard/.android_secure");
+    __system("rm -r /sdcard/.bookmark_thumb1");
+    __system("rm -r /sdcard/.easc");
+    __system("rm -r /sdcard/.estrongs");
+    __system("rm -r /sdcard/.footprints");
+    __system("rm -r /sdcard/.htcnews");
+    __system("rm -r /sdcard/.Mail");
+    __system("rm -r /sdcard/albumthumbs");
+    __system("rm -r /sdcard/amazonmp3");
+    __system("rm -r /sdcard/Android");
+    __system("rm -r /sdcard/DCIM/.thumbnails");
+    __system("rm -r /sdcard/LOST.DIR");
+    __system("rm -r /sdcard/qik");
+    __system("rm -r /sdcard/Removed_Apps");
+    __system("rm -r /sdcard/rosie_scroll");
+    __system("rm -r /sdcard/rssreader");
+    __system("rm -r /sdcard/tmp");
+//    ensure_root_path_unmounted("SDCARD:");
+    ensure_root_path_unmounted("DATA:");
 }	

@@ -1582,65 +1582,72 @@ show_menu_wipe()
     static char* headers[] = { "Choose wipe item,",
 			       UNCONFIRM_TXT,
 			       "",
+			       "Boot=B | Cache=C | Data=D | System=S | Dalvik=V",
+			       ".android_secure=A | SD-EXT=E | Temp files=T",
+			       "",
 			       NULL };
 
 
 // these constants correspond to elements of the items[] list.
 #define ITEM_WIPE_EXIT     0
-#define ITEM_WIPE_CACHED   1
+#define ITEM_WIPE_CACHES   1
 #define ITEM_WIPE_FRMTALL  2
-#define ITEM_WIPE_ALL      3
-#define ITEM_WIPE_DATA     4
+#define ITEM_WIPE_SUPERWP  3
+#define ITEM_WIPE_ALL      4
 #define ITEM_WIPE_CACHE    5
 #define ITEM_WIPE_DALVIK   6
-#define ITEM_WIPE_SECURE   7
-#define ITEM_WIPE_BOOT     8
-#define ITEM_WIPE_EXT      9
-#define ITEM_WIPE_SYSTEM   10
-#define ITEM_WIPE_BAT      11
-#define ITEM_WIPE_ROT      12
-#define ITEM_WIPE_SDCARD   13
+#define ITEM_WIPE_BOOT     7
+#define ITEM_WIPE_DATA     8
+#define ITEM_WIPE_SYSTEM   9
+#define ITEM_WIPE_BAT      10
+#define ITEM_WIPE_ROT      11
+#define ITEM_WIPE_SDCARD   12
+#define ITEM_WIPE_EXT      13
+#define ITEM_WIPE_SECURE   14
+#define ITEM_WIPE_CLEARTMP 15
 
 #if defined (HAS_INTERNAL_SD) && !defined (USES_NAND_MTD) && !defined (IS_ICONIA)
-#define ITEM_WIPE_INTERNAL 14
-#define ITEM_WIPE_EXT_TOGGLE 15
+#define ITEM_WIPE_INTERNAL 16
+#define ITEM_WIPE_EXT_TOGGLE 17
 
 #elif !defined (USES_NAND_MTD) && defined (IS_ICONIA)
-#define ITEM_WIPE_FLEXROM 14
-#define ITEM_WIPE_EXT_TOGGLE 15
+#define ITEM_WIPE_FLEXROM 16
+#define ITEM_WIPE_EXT_TOGGLE 17
 
 #elif !defined (USES_NAND_MTD) 
-#define ITEM_WIPE_EXT_TOGGLE 14
+#define ITEM_WIPE_EXT_TOGGLE 16
 
 #elif defined (HAS_INTERNAL_SD) 
-#define ITEM_WIPE_INTERNAL 14
+#define ITEM_WIPE_INTERNAL 16
 
 #endif
 
     static char* items[] = { "- Return",
-                             "- Wipe /cache & Dalvik-cache",
-			     "- Wipe /boot, /cache, /data, /system",
-			     "- Wipe ALL data/factory reset",
-			     "- Wipe /data",
-                             "- Wipe /cache",
-			     "- Wipe Dalvik-cache",
-			     "- Wipe /sdcard/.android_secure",
-			     "- Wipe /boot",
-                             "- Wipe /sd-ext",
-                             "- Wipe /system",
-			     "- Wipe battery stats",
-                             "- Wipe rotate settings",
-			     "- Wipe Sdcard",
+                             "- Combo Wipes  Caches (C,V)",
+			     "               Format all (B,C,D,S)",
+			     "               Superwipe (T+(B,C,D,S)*3)",
+			     "               Factory data reset (D,C,A,E)",
+			     "- Single Wipes /cache",
+			     "               /data/dalvik-cache",
+			     "               /boot",
+                             "               /data",
+                             "               /system",
+			     "               battery stats",
+                             "               rotate settings",
+			     "- SD Wipes     ***Entire SD Card!!***",
+                             "               /sd-ext",
+			     "               .android_secure",
+			     "- Other Wipes  Temp files (C,V,T)",
 #if !defined(USES_NAND_MTD) && defined (HAS_INTERNAL_SD) && !defined (IS_ICONIA)
-			     "- Wipe Internal_sd",
+			     "               Internal_sd",
 			     "- Toggle Ext Full Wipe",
 #elif !defined (USES_NAND_MTD) && defined (IS_ICONIA)
-			     "- Wipe Flexrom",
+			     "               Flexrom",
 			     "- Toggle Ext Full Wipe",
 #elif !defined (USES_NAND_MTD)
 			     "- Toggle Ext Full Wipe",
 #elif defined (HAS_INTERNAL_SD)
-			     "- Wipe Internal_sd",
+			     "               Internal_sd",
 #endif
                              NULL };
 
@@ -1684,14 +1691,14 @@ show_menu_wipe()
                 case ITEM_WIPE_EXIT:
 			return;
 
-                case ITEM_WIPE_CACHED:
+                case ITEM_WIPE_CACHES:
                     ui_clear_key_queue();
-		    ui_print("\nWipe /cache & Dalvik-cache");
+		    ui_print("\nWipe Caches");
                     ui_print("\nPress %s to confirm,", CONFIRM);
                     ui_print("\nany other key to abort.\n\n");
-                    int confirm_wipe_cached = ui_wait_key();
-                    int action_confirm_wipe_cached = device_handle_key(confirm_wipe_cached, 1);
-    		    if (action_confirm_wipe_cached == SELECT_ITEM) {
+                    int confirm_wipe_caches = ui_wait_key();
+                    int action_confirm_wipe_caches = device_handle_key(confirm_wipe_caches, 1);
+    		    if (action_confirm_wipe_caches == SELECT_ITEM) {
                         erase_root("CACHE:");
                         ui_print("Formatting DATA:dalvik-cache...\n");
                         format_non_mtd_device("DATA:dalvik-cache");
@@ -1709,16 +1716,16 @@ show_menu_wipe()
 				ui_print("Formatting SDEXT:dalvik-cache...\n");
 	                      	format_non_mtd_device("SDEXT:dalvik-cache");
 			}
-                        ui_print("/cache & Dalvik-cache wipe complete!\n\n");
+                        ui_print("Caches wipe complete!\n\n");
                     } else {
-                        ui_print("/cache & Dalvik-cache wipe aborted!\n\n");
+                        ui_print("Caches wipe aborted!\n\n");
                     }
                     if (!ui_text_visible()) return;
                     break;
 
 		case ITEM_WIPE_FRMTALL:
                     ui_clear_key_queue();
-		    ui_print("\nWipe /boot, /cache, /data, /system");
+		    ui_print("\nFormat all");
                     ui_print("\nPress %s to confirm,", CONFIRM);
                     ui_print("\nany other key to abort.\n\n");
                     int confirm_wipe_frmtall = ui_wait_key();
@@ -1728,16 +1735,46 @@ show_menu_wipe()
                         erase_root("CACHE:");
                         erase_root("DATA:");
                         erase_root("SYSTEM:");
-                        ui_print("/boot, /cache, /data, /system wipe complete!\n\n");
+                        ui_print("Format all complete!\n\n");
                     } else {
-                        ui_print("/boot, /cache, /data, /system wipe aborted!\n\n");
+                        ui_print("Format all aborted!\n\n");
+                    }
+                    if (!ui_text_visible()) return;
+                    break;
+
+		case ITEM_WIPE_SUPERWP:
+                    ui_clear_key_queue();
+		    ui_print("\nSuperwipe");
+                    ui_print("\nPress %s to confirm,", CONFIRM);
+                    ui_print("\nany other key to abort.\n\n");
+                    int confirm_wipe_superwp = ui_wait_key();
+                    int action_confirm_wipe_superwp = device_handle_key(confirm_wipe_superwp, 1);
+    		    if (action_confirm_wipe_superwp == SELECT_ITEM) {
+                        erase_root("CACHE:");
+                        ui_print("Wiping temp files...\n");
+                        wipe_temp_files();
+                        erase_root("BOOT:");
+                        erase_root("CACHE:");
+                        erase_root("DATA:");
+                        erase_root("SYSTEM:");
+                        erase_root("BOOT:");
+                        erase_root("CACHE:");
+                        erase_root("DATA:");
+                        erase_root("SYSTEM:");
+                        erase_root("BOOT:");
+                        erase_root("CACHE:");
+                        erase_root("DATA:");
+                        erase_root("SYSTEM:");
+                        ui_print("Superwipe complete!\n\n");
+                    } else {
+                        ui_print("Superwipe aborted!\n\n");
                     }
                     if (!ui_text_visible()) return;
                     break;
 
 		case ITEM_WIPE_ALL:
                     ui_clear_key_queue();
-		    ui_print("\nWipe ALL userdata");
+		    ui_print("\nFactory data reset");
                     ui_print("\nPress %s to confirm,", CONFIRM);
                     ui_print("\nany other key to abort.\n\n");
                     int confirm_wipe_all = ui_wait_key();
@@ -1762,26 +1799,10 @@ show_menu_wipe()
 		        } else {
 	                        erase_root("SDEXT:");
 			}
-                        ui_print("Userdata wipe complete!\n\n");			
+                        ui_print("Factory data reset complete!\n\n");			
 
                     } else {
-                        ui_print("Userdata wipe aborted!\n\n");
-                    }
-                    if (!ui_text_visible()) return;
-                    break;
-
-                case ITEM_WIPE_DATA:
-                    ui_clear_key_queue();
-		    ui_print("\nWipe /data");
-                    ui_print("\nPress %s to confirm,", CONFIRM);
-                    ui_print("\nany other key to abort.\n\n");
-                    int confirm_wipe_data = ui_wait_key();
-                    int action_confirm_wipe_data = device_handle_key(confirm_wipe_data, 1);
-    		    if (action_confirm_wipe_data == SELECT_ITEM) {
-                        erase_root("DATA:");
-                        ui_print("/data wipe complete!\n\n");
-                    } else {
-                        ui_print("/data wipe aborted!\n\n");
+                        ui_print("Factory data reset aborted!\n\n");
                     }
                     if (!ui_text_visible()) return;
                     break;
@@ -1833,25 +1854,6 @@ show_menu_wipe()
                     if (!ui_text_visible()) return;
                     break;
 
-                case ITEM_WIPE_SECURE:
-                    ui_clear_key_queue();
-		    ui_print("\nWipe /sdcard/.android_secure");
-                    ui_print("\nPress %s to confirm,", CONFIRM);
-                    ui_print("\nany other key to abort.\n\n");
-                    int confirm_wipe_secure = ui_wait_key();
-                    int action_confirm_wipe_secure = device_handle_key(confirm_wipe_secure, 1);
-    		    if (action_confirm_wipe_secure == SELECT_ITEM) {
-                        erase_root("SDCARD:.android_secure");
-#ifdef HAS_INTERNAL_SD
-			erase_root("INTERNALSD:.android_secure");
-#endif
-                        ui_print(".android_secure wipe complete!\n\n");
-                    } else {
-                        ui_print(".android_secure wipe aborted!\n\n");
-                    }
-                    if (!ui_text_visible()) return;
-                    break;
-
 		case ITEM_WIPE_BOOT:
                     ui_clear_key_queue();
 		    ui_print("\nWipe /boot");
@@ -1868,28 +1870,18 @@ show_menu_wipe()
                     if (!ui_text_visible()) return;
                     break;
 
-                case ITEM_WIPE_EXT:
+                case ITEM_WIPE_DATA:
                     ui_clear_key_queue();
-		    ui_print("\nWipe /sd-ext");
+		    ui_print("\nWipe /data");
                     ui_print("\nPress %s to confirm,", CONFIRM);
                     ui_print("\nany other key to abort.\n\n");
-                    int confirm_wipe_ext = ui_wait_key();
-                    int action_confirm_wipe_ext = device_handle_key(confirm_wipe_ext, 1);
-    		    if (action_confirm_wipe_ext == SELECT_ITEM) {
-                        
-			char device_sdext[PATH_MAX];
-    			get_device_index("SDEXT:", device_sdext);
-
-			struct stat st;
-        		if (0 != stat(device_sdext, &st))
-		        {
-                        ui_print("Skipping format of /sd-ext.\n");
-		        } else {
-	                        erase_root("SDEXT:");
-	                        ui_print("/sd-ext wipe complete!\n\n");			
-			}
+                    int confirm_wipe_data = ui_wait_key();
+                    int action_confirm_wipe_data = device_handle_key(confirm_wipe_data, 1);
+    		    if (action_confirm_wipe_data == SELECT_ITEM) {
+                        erase_root("DATA:");
+                        ui_print("/data wipe complete!\n\n");
                     } else {
-                        ui_print("/sd-ext wipe aborted!\n\n");
+                        ui_print("/data wipe aborted!\n\n");
                     }
                     if (!ui_text_visible()) return;
                     break;
@@ -1944,10 +1936,10 @@ show_menu_wipe()
                     }
                     if (!ui_text_visible()) return;
                     break;
-            
+
 		case ITEM_WIPE_SDCARD:
                     ui_clear_key_queue();
-		    ui_print("\nWipe Sdcard");
+		    ui_print("\nWipe ENTIRE SD Card!!");
                     ui_print("\nThis is Irreversible!!!\n");
 		    ui_print("\nPress %s to confirm,", CONFIRM);
                     ui_print("\nany other key to abort.\n\n");
@@ -1955,9 +1947,88 @@ show_menu_wipe()
                     int action_confirm_wipe_mysd = device_handle_key(confirm_wipe_mysd, 1);
     		    if (action_confirm_wipe_mysd == SELECT_ITEM) {
                         erase_root("SDCARD:");
-                        ui_print("/Sdcard wipe complete!\n\n");
+                        ui_print("/SD Card wipe complete!\n\n");
                     } else {
-                        ui_print("/Sdcard wipe aborted!\n\n");
+                        ui_print("/SD Card wipe aborted!\n\n");
+                    }
+                    if (!ui_text_visible()) return;
+                    break;
+
+                case ITEM_WIPE_EXT:
+                    ui_clear_key_queue();
+		    ui_print("\nWipe /sd-ext");
+                    ui_print("\nPress %s to confirm,", CONFIRM);
+                    ui_print("\nany other key to abort.\n\n");
+                    int confirm_wipe_ext = ui_wait_key();
+                    int action_confirm_wipe_ext = device_handle_key(confirm_wipe_ext, 1);
+    		    if (action_confirm_wipe_ext == SELECT_ITEM) {
+                        
+			char device_sdext[PATH_MAX];
+    			get_device_index("SDEXT:", device_sdext);
+
+			struct stat st;
+        		if (0 != stat(device_sdext, &st))
+		        {
+                        ui_print("Skipping format of /sd-ext.\n");
+		        } else {
+	                        erase_root("SDEXT:");
+	                        ui_print("/sd-ext wipe complete!\n\n");			
+			}
+                    } else {
+                        ui_print("/sd-ext wipe aborted!\n\n");
+                    }
+                    if (!ui_text_visible()) return;
+                    break;
+         
+                case ITEM_WIPE_SECURE:
+                    ui_clear_key_queue();
+		    ui_print("\nWipe /sdcard/.android_secure");
+                    ui_print("\nPress %s to confirm,", CONFIRM);
+                    ui_print("\nany other key to abort.\n\n");
+                    int confirm_wipe_secure = ui_wait_key();
+                    int action_confirm_wipe_secure = device_handle_key(confirm_wipe_secure, 1);
+    		    if (action_confirm_wipe_secure == SELECT_ITEM) {
+                        erase_root("SDCARD:.android_secure");
+#ifdef HAS_INTERNAL_SD
+			erase_root("INTERNALSD:.android_secure");
+#endif
+                        ui_print(".android_secure wipe complete!\n\n");
+                    } else {
+                        ui_print(".android_secure wipe aborted!\n\n");
+                    }
+                    if (!ui_text_visible()) return;
+                    break;
+
+		case ITEM_WIPE_CLEARTMP:
+                    ui_clear_key_queue();
+		    ui_print("\nWipe temp files");
+                    ui_print("\nPress %s to confirm,", CONFIRM);
+                    ui_print("\nany other key to abort.\n\n");
+                    int confirm_wipe_cleartmp = ui_wait_key();
+                    int action_confirm_wipe_cleartmp = device_handle_key(confirm_wipe_cleartmp, 1);
+    		    if (action_confirm_wipe_cleartmp == SELECT_ITEM) {
+                        erase_root("CACHE:");
+                        ui_print("Formatting DATA:dalvik-cache...\n");
+                        format_non_mtd_device("DATA:dalvik-cache");
+   
+                        ui_print("Formatting CACHE:dalvik-cache...\n");
+                        format_non_mtd_device("CACHE:dalvik-cache");
+
+			char device_sdext[PATH_MAX];
+    			get_device_index("SDEXT:", device_sdext);
+			struct stat st;
+        		if (0 != stat(device_sdext, &st))
+		        {
+                        ui_print("Skipping format SDEXT:dalvik-cache.\n");
+		        } else {
+				ui_print("Formatting SDEXT:dalvik-cache...\n");
+	                      	format_non_mtd_device("SDEXT:dalvik-cache");
+			}
+                        ui_print("Wiping temp files...\n");
+                        wipe_temp_files();
+                        ui_print("Temp files wipe complete!\n\n");
+                    } else {
+                        ui_print("Temp files wipe aborted!\n\n");
                     }
                     if (!ui_text_visible()) return;
                     break;
@@ -2690,6 +2761,7 @@ show_menu_mount()
             // throw away keys pressed while the command was running,
             // so user doesn't accidentally trigger menu items.
             ui_clear_key_queue();
+
         }
     }
 	
@@ -2885,6 +2957,7 @@ ui_start_menu(headers, items);
 			ui_print("\nor restore a nandroid then wipe,");
 			ui_print("\n/data manually when done.\n\n");
 			int confirm_formext3 = ui_wait_key();
+
 			int action_confirm_formext3 = device_handle_key(confirm_formext3, 1);
     				if (action_confirm_formext3 == SELECT_ITEM) {
 	               		ui_print("Working ...\n");
@@ -3389,7 +3462,7 @@ prompt_and_wait()
 	
   
 	
-    static char* headers[] = { "Android system recovery",
+    static char* headers[] = { "            ANDROID SYSTEM RECOVERY",
 			       "",
 			       NULL };
 
@@ -3475,6 +3548,7 @@ prompt_and_wait()
             // turn off the menu, letting ui_print() to scroll output
             // on the screen.
             ui_end_menu();
+
 
             switch (chosen_item) {
                 case ITEM_REBOOT:
@@ -3579,6 +3653,7 @@ main(int argc, char **argv)
      }
 
     time_t start = time(NULL);
+
 
     // If these fail, there's not really anywhere to complain...
     freopen(TEMPORARY_LOG_FILE, "a", stdout); setbuf(stdout, NULL);
