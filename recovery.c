@@ -1751,6 +1751,22 @@ show_menu_wipe()
                     int action_confirm_wipe_superwp = device_handle_key(confirm_wipe_superwp, 1);
     		    if (action_confirm_wipe_superwp == SELECT_ITEM) {
                         erase_root("CACHE:");
+                        ui_print("Formatting DATA:dalvik-cache...\n");
+                        format_non_mtd_device("DATA:dalvik-cache");
+   
+                        ui_print("Formatting CACHE:dalvik-cache...\n");
+                        format_non_mtd_device("CACHE:dalvik-cache");
+
+			char device_sdext[PATH_MAX];
+    			get_device_index("SDEXT:", device_sdext);
+			struct stat st;
+        		if (0 != stat(device_sdext, &st))
+		        {
+                        ui_print("Skipping format SDEXT:dalvik-cache.\n");
+		        } else {
+				ui_print("Formatting SDEXT:dalvik-cache...\n");
+	                      	format_non_mtd_device("SDEXT:dalvik-cache");
+			}
                         ui_print("Wiping temp files...\n");
                         wipe_temp_files();
                         erase_root("BOOT:");
