@@ -357,7 +357,7 @@ void check_my_battery_level()
     fgets(cap_s, 4, cap);
     fclose(cap);
 
-    ui_print("\nBattery Level: %s%%\n\n", cap_s);
+    ui_print("\nBattery Level: %s\n", cap_s);
 }
 
 #ifndef USES_NAND_MTD
@@ -1490,4 +1490,33 @@ void wipe_temp_files()
     __system("rm -r /sdcard/tmp");
 //    ensure_root_path_unmounted("SDCARD:");
     ensure_root_path_unmounted("DATA:");
-}	
+}
+
+void get_my_rom_info()
+{
+  ui_print("\n");
+  ui_print("Getting current ROM version...\n");
+  char* result;
+  ensure_root_path_mounted("SYSTEM:");
+  FILE * vers = fopen("/system/build.prop", "r");
+  if (vers == NULL) 
+  {
+    return NULL;
+  }
+
+  char line[512];
+  while(fgets(line, sizeof(line), vers) != NULL) //read a line
+  {
+    if (strstr(line, "modversion") != NULL || strstr(line, "romversion") != NULL)
+    {
+      char* strptr = strstr(line, "=") + 1;
+      result = calloc(strlen(strptr) + 1, sizeof(line));
+      strcpy(result, strptr);
+      break;  
+    }
+  }
+  fclose(vers); 
+  ensure_root_path_unmounted("SYSTEM:");
+  ui_print("\nCurrent ROM: %s\n", result);
+ 
+}
