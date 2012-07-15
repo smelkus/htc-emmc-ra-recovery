@@ -1492,31 +1492,25 @@ void wipe_temp_files()
     ensure_root_path_unmounted("DATA:");
 }
 
-void get_my_rom_info()
+void get_rom_version()
 {
-  ui_print("\n");
-  ui_print("Getting current ROM version...\n");
-  char* result;
-  ensure_root_path_mounted("SYSTEM:");
-  FILE * vers = fopen("/system/build.prop", "r");
-  if (vers == NULL) 
-  {
-    return NULL;
-  }
+  char line[52];
+  char* romversion;
+  char* strptr;
+  FILE *buildprop = fopen("/system/build.prop", "r");
 
-  char line[512];
-  while(fgets(line, sizeof(line), vers) != NULL) //read a line
+  /* Get ROM Version */
+  ensure_root_path_mounted("SYSTEM:");
+  while(fgets(line, sizeof(line), buildprop) != NULL) //read a line
   {
     if (strstr(line, "modversion") != NULL || strstr(line, "romversion") != NULL)
     {
-      char* strptr = strstr(line, "=") + 1;
-      result = calloc(strlen(strptr) + 1, sizeof(line));
-      strcpy(result, strptr);
-      break;  
+      strptr = strstr(line, "=") + 1;
+      romversion = calloc(strlen(strptr) + 1, sizeof(line));
+      strcpy(romversion, strptr);
     }
   }
-  fclose(vers); 
+  fclose(buildprop);
   ensure_root_path_unmounted("SYSTEM:");
-  ui_print("\nCurrent ROM: %s\n", result);
- 
+  ui_print("\nCurrent ROM: %s\n", romversion);
 }

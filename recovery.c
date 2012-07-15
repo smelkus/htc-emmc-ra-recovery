@@ -2449,13 +2449,15 @@ show_menu_other()
 #define ITEM_OTHER_FIXUID 1
 #define ITEM_OTHER_RE2SD  2
 #define ITEM_OTHER_KEY_TEST 3
-#define ITEM_OTHER_BATTERY_LEVEL 4
-#define ITEM_OTHER_CREDITS 5
+#define ITEM_OTHER_GET_ROM_VERSION 4
+#define ITEM_OTHER_BATTERY_LEVEL 5
+#define ITEM_OTHER_CREDITS 6
 
     static char* items[] = { "- Return",
 			     "- Fix Permissions",
 			     "- Move recovery.log to SD",
                              "- Debugging Test Key Codes",
+			     "- Get current ROM Version",
 			     "- Check Battery Level",
 			     "- Source & Credits",
 			     NULL };
@@ -2524,6 +2526,10 @@ show_menu_other()
 				key_logger_test();
 				break;
 		
+
+		case ITEM_OTHER_GET_ROM_VERSION:
+				get_rom_version();
+				break;
 
 		case ITEM_OTHER_BATTERY_LEVEL:
 				check_my_battery_level();
